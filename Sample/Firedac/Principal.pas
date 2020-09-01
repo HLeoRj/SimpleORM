@@ -3,23 +3,17 @@ unit Principal;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   FireDAC.UI.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Phys,
   FireDAC.Phys.FB, FireDAC.Phys.FBDef, FireDAC.VCLUI.Wait, FireDAC.Comp.Client,
-  FireDAC.Comp.DataSet, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids,
-  Vcl.ExtCtrls, Vcl.ComCtrls,FireDAC.Phys.IBBase,
-  SimpleInterface,
-  SimpleDAO,
-  Entidade.Pedido,
-  System.Generics.Collections,
-  SimpleQueryFiredac,
-//  Entidade.DoublePK,
-  SimpleAttributes,
-  SimpleStoreProcFiredac,
-  SimpleStoreProcInterface;
+  FireDAC.Comp.DataSet, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, SimpleInterface,
+  SimpleDAO, Entidade.Pedido, System.Generics.Collections, SimpleQueryFiredac,
+  SimpleAttributes, Vcl.ExtCtrls, Vcl.ComCtrls,
+  SimpleStoreProcFiredac, FireDAC.Phys.IBBase, SimpleStoreProcInterface;
 
 type
   TForm9 = class(TForm)
@@ -48,8 +42,6 @@ type
     Button9: TButton;
     Button10: TButton;
     FDPhysFBDriverLink1: TFDPhysFBDriverLink;
-    EditResultId: TEdit;
-    Label1: TLabel;
     Button11: TButton;
 
     procedure Button3Click(Sender: TObject);
@@ -67,9 +59,8 @@ type
     procedure Button11Click(Sender: TObject);
   private
     { Private declarations }
-    DAOPedido : iSimpleDAO<TPEDIDO>;
-    DAOSPPedido : iSimpleDAOStoreProc<TPEDIDO>;
-
+    DAOPedido: iSimpleDAO<TPEDIDO>;
+    DAOStoreProcPedido: iSimpleDAOStoreProc<TPEDIDO>;
   public
     { Public declarations }
   end;
@@ -86,7 +77,7 @@ uses
 
 procedure TForm9.Button1Click(Sender: TObject);
 var
-  Pedido : TPEDIDO;
+  Pedido: TPEDIDO;
 begin
   Pedido := TPEDIDO.Create;
   try
@@ -103,16 +94,12 @@ end;
 
 procedure TForm9.Button2Click(Sender: TObject);
 var
-  Pedidos : TObjectList<TPEDIDO>;
-  Pedido : TPEDIDO;
+  Pedidos: TObjectList<TPEDIDO>;
+  Pedido: TPEDIDO;
 begin
   Pedidos := TObjectList<TPEDIDO>.Create;
 
-  DAOPedido
-    .SQL
-      .OrderBy('ID')
-    .&End
-  .Find(Pedidos);
+  DAOPedido.SQL.OrderBy('ID').&End.Find(Pedidos);
 
   try
     for Pedido in Pedidos do
@@ -132,7 +119,7 @@ end;
 
 procedure TForm9.Button4Click(Sender: TObject);
 var
-  Pedido : TPEDIDO;
+  Pedido: TPEDIDO;
 begin
   Pedido := TPEDIDO.Create;
   try
@@ -146,7 +133,7 @@ end;
 
 procedure TForm9.Button5Click(Sender: TObject);
 var
-  Pedido : TPEDIDO;
+  Pedido: TPEDIDO;
 begin
   Pedido := TPEDIDO.Create;
   try
@@ -163,17 +150,12 @@ end;
 
 procedure TForm9.btnFindClick(Sender: TObject);
 begin
-  DAOPedido
-    .SQL
-      .OrderBy('ID')
-    .&End
-  .Find;
+  DAOPedido.SQL.OrderBy('ID').&End.Find;
 end;
-
 
 procedure TForm9.Button6Click(Sender: TObject);
 var
-  Pedido : TPEDIDO;
+  Pedido: TPEDIDO;
 begin
   Pedido := DAOPedido.Find(StrToInt(Edit2.Text));
   try
@@ -185,11 +167,7 @@ end;
 
 procedure TForm9.Button7Click(Sender: TObject);
 begin
-  DAOPedido
-    .SQL
-      .Where(' Nome = ' + QuotedStr(Edit1.Text))
-    .&End
-  .Find;
+  DAOPedido.SQL.Where(' Nome = ' + QuotedStr(Edit1.Text)).&End.Find;
 end;
 
 procedure TForm9.Button8Click(Sender: TObject);
@@ -206,29 +184,19 @@ end;
 
 procedure TForm9.FormCreate(Sender: TObject);
 var
-  Conn : iSimpleQuery;
-  ConnSp : iSimpleStoreProc;
+  Conn: iSimpleQuery;
 begin
   ReportMemoryLeaksOnShutdown := true;
 
   Conn := TSimpleQueryFiredac.New(FDConnection1);
 
-
-  DAOPedido := TSimpleDAO<TPEDIDO>
-                  .New(Conn)
-                  .DataSource(DataSource1)
-                  .BindForm(Self);
-
-
-  ConnSp := TSimpleStoreProcFiredac.New(FDConnection1);
-  DAOSPPedido := TSimpleDAOStoreProc<TPEDIDO>
-                  .New(ConnSp).&End;
+  DAOPedido := TSimpleDAO<TPEDIDO>.New(Conn).DataSource(DataSource1).BindForm(Self);
+  DAOStoreProcPedido := TSimpleDAOStoreProc<TPEDIDO>.New(TSimpleStoreProcFiredac.New(FDConnection1));
 end;
 
 procedure TForm9.Button10Click(Sender: TObject);
 var
   Pedido: TPEDIDO;
-
 begin
   Pedido := TPEDIDO.Create;
   try
@@ -236,9 +204,7 @@ begin
     Pedido.CLIENTE := Edit1.Text;
     Pedido.DATAPEDIDO := now;
     Pedido.VALORTOTAL := StrToCurr(Edit3.Text);
-
-    DAOSPPedido.Execute(Pedido).&End;
-
+    DAOStoreProcPedido.Update(Pedido).&End;
   finally
     Pedido.Free;
     btnFindClick(nil);
@@ -249,23 +215,13 @@ procedure TForm9.Button11Click(Sender: TObject);
 var
   Pedido: TPEDIDO;
 begin
-  EditResultId.Text := '';
   Pedido := TPEDIDO.Create;
   try
-    Pedido.ID := StrToInt(Edit2.Text);
-    Pedido.CLIENTE := Edit1.Text;
-    Pedido.DATAPEDIDO := now;
-    Pedido.VALORTOTAL := StrToCurr(Edit3.Text);
-    DAOSPPedido.Execute(Pedido).Result.&End;
-
-    EditResultId.Text := IntToStr(Pedido.ID);
-
+    DAOStoreProcPedido.Find(Edit2.Text, Pedido).&End;
+    Memo1.Lines.Add(Pedido.CLIENTE + DateToStr(Pedido.DATAPEDIDO));
   finally
     Pedido.Free;
-    btnFindClick(nil);
   end;
 end;
 
 end.
-
-

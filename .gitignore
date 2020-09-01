@@ -66,3 +66,5 @@ __recovery/
 *.stat
 SimpleQueryDbExpress.pas
 *.rar
+Estudo/SimpleDAOStoreProc.pas
+Sample/horse/modules/

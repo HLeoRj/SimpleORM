@@ -54,5 +54,4 @@ contains
   SimpleStoreProcFiredac in 'SimpleStoreProcFiredac.pas',
   SimpleDAOStoreProc in 'SimpleDAOStoreProc.pas',
   SimpleSP in 'SimpleSP.pas';
-
 end.

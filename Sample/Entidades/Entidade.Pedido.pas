@@ -9,6 +9,9 @@ Type
   [Tabela('PEDIDO')]
 //  [ProceName('PEDIDO_IU')]
   [ProceName('PEDIDO_IU_RESULT')]
+  [ProceSel('PEDIDO_SEL')]
+  [ProceDel('PEDIDO_DEL')]
+
   TPEDIDO = class
   private
     FID: Integer;
@@ -22,9 +25,7 @@ Type
   public
     constructor Create;
     destructor Destroy; override;
-  published
-    [Campo('ID'), Pk, AutoInc]
-    [FieldResult('RESULTID')]
+    [Campo('ID'), Pk, AutoInc,ResultProc('RESULTID'),ProcImput('AID')]
     property ID: Integer read FID write SetID;
     [Campo('NOME')]
     property CLIENTE: String read FCLIENTE write SetCLIENTE;

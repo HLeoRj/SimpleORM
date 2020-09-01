@@ -2,7 +2,7 @@ object Form9: TForm9
   Left = 0
   Top = 0
   Caption = 'Form9'
-  ClientHeight = 438
+  ClientHeight = 357
   ClientWidth = 758
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -14,16 +14,9 @@ object Form9: TForm9
   OnCreate = FormCreate
   DesignSize = (
     758
-    438)
+    357)
   PixelsPerInch = 96
   TextHeight = 13
-  object Label1: TLabel
-    Left = 8
-    Top = 312
-    Width = 67
-    Height = 13
-    Caption = 'Id de Retorno'
-  end
   object Button3: TButton
     Left = 8
     Top = 8
@@ -61,8 +54,8 @@ object Form9: TForm9
     OnClick = btnFindClick
   end
   object Button6: TButton
-    Left = 8
-    Top = 163
+    Left = 89
+    Top = 132
     Width = 75
     Height = 25
     Caption = 'FindID'
@@ -70,9 +63,9 @@ object Form9: TForm9
     OnClick = Button6Click
   end
   object Button7: TButton
-    Left = 8
-    Top = 194
-    Width = 75
+    Left = 89
+    Top = 101
+    Width = 97
     Height = 25
     Caption = 'FindWhere'
     TabOrder = 5
@@ -96,7 +89,7 @@ object Form9: TForm9
     Left = 192
     Top = 68
     Width = 549
-    Height = 273
+    Height = 196
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DataSource1
     TabOrder = 8
@@ -108,13 +101,14 @@ object Form9: TForm9
   end
   object Memo1: TMemo
     Left = 192
-    Top = 356
+    Top = 283
     Width = 549
     Height = 66
     Anchors = [akLeft, akRight, akBottom]
     Lines.Strings = (
       'Memo1')
     TabOrder = 9
+    ExplicitTop = 238
   end
   object Edit3: TEdit
     Left = 439
@@ -170,27 +164,20 @@ object Form9: TForm9
   end
   object Button10: TButton
     Left = 8
-    Top = 250
-    Width = 113
+    Top = 178
+    Width = 129
     Height = 25
     Caption = 'StoreProcedure'
     TabOrder = 16
     OnClick = Button10Click
   end
-  object EditResultId: TEdit
-    Left = 8
-    Top = 331
-    Width = 59
-    Height = 21
-    TabOrder = 17
-  end
   object Button11: TButton
     Left = 8
-    Top = 281
-    Width = 161
+    Top = 209
+    Width = 129
     Height = 25
-    Caption = 'StoreProcedure / Retorno ID'
-    TabOrder = 18
+    Caption = 'Find StoreProcedure'
+    TabOrder = 17
     OnClick = Button11Click
   end
   object DataSource1: TDataSource
@@ -202,8 +189,10 @@ object Form9: TForm9
       
         'Database=C:\Delphi Files\Componentes - DXE10_Tokio\SimpleRepo\Sa' +
         'mple\Database\PDVUPDATES.FDB'
-      'User_Name=SYSDBA'
+      'User_Name=sysdba'
       'Password=a236512'
+      'Protocol=TCPIP'
+      'Port=3051'
       'DriverID=FB')
     LoginPrompt = False
     Left = 552
@@ -211,9 +200,9 @@ object Form9: TForm9
   end
   object FDPhysFBDriverLink1: TFDPhysFBDriverLink
     VendorLib = 
-      'C:\Delphi Files\Componentes - DXE10_Tokio\SimpleRepo\Sample\Fire' +
-      'dac\fbclient.dll'
-    Left = 448
-    Top = 96
+      'C:\Delphi Files\Componentes - DXE10_Tokio\SimpleRepo\Sample\Data' +
+      'base\fbclient.dll'
+    Left = 384
+    Top = 144
   end
 end

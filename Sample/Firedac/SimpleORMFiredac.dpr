@@ -4,7 +4,6 @@ uses
   Vcl.Forms,
   Principal in 'Principal.pas' {Form9},
   Entidade.Pedido in '..\Entidades\Entidade.Pedido.pas';
-
 //  Entidade.DoublePK in '..\Entidades\Entidade.DoublePK.pas';
 
 {$R *.res}

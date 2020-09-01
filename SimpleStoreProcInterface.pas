@@ -32,7 +32,7 @@ uses
   System.Classes,
   System.Generics.Collections,
   Data.DB,
-  System.TypInfo;
+  FireDAC.Comp.Client, System.Rtti;
 
 type
 
@@ -40,14 +40,20 @@ type
     ['{707123CC-8A18-4BEA-8014-60769773C252}']
     function NameStoreProc(Const aNome: String): iSimpleStoreProc;
     function Params(Const aNome: String; aValue: variant): iSimpleStoreProc;
+    function ParamsImput(const aNome: String; aValue: variant)
+      : iSimpleStoreProc;
     function ExecProc: iSimpleStoreProc;
-    function Return(Const aNome: String; Out aValue: Variant ) : iSimpleStoreProc;
+    function ResultProc(aPrpRtti: TRttiProperty; aCampo: String): TValue;
+    function Return(Const aNome: String; Out aValue: Variant ) : iSimpleStoreProc;    
   end;
 
   iSimpleDAOStoreProc<T: class> = interface
     ['{E9014B4A-EA81-4F14-AA9B-4B7FE03C4E81}']
-    function Execute(aValue: T): iSimpleDAOStoreProc<T>;
-    function Result: iSimpleDAOStoreProc<T>;
+    function Find(const aID: integer; var aObject: T) : iSimpleDAOStoreProc<T>; overload;
+    function Find(const aID: String; var aObject: T) : iSimpleDAOStoreProc<T>; overload;
+    function Update(aValue: T): iSimpleDAOStoreProc<T>; overload;
+    function StoreProcedureToEntity: T;
+    function Instance: T;
     function &End: iSimpleDAOStoreProc<T>;
   end;
 
