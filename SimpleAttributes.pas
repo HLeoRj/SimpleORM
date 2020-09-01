@@ -48,6 +48,14 @@ type
     property Name: String read FName write FName;
   end;
 
+  FieldResult= class(TCustomAttribute)
+  private
+    FName: String;
+  public
+    constructor Create(Const aName: String);
+    property Name: String read FName write FName;
+  end;
+
   ResultProc = class(TCustomAttribute)
   private
     FName: String;
@@ -139,6 +147,13 @@ end;
 { ProcImput }
 
 constructor ProcImput.Create(const aName: String);
+begin
+  FName := aName;
+end;
+
+{ FieldResult }
+
+constructor FieldResult.Create(const aName: String);
 begin
   FName := aName;
 end;
