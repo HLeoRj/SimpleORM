@@ -35,12 +35,21 @@ Type
   TSimpleSP<T: class, constructor> = class(TInterfacedObject, iSimpleStoreProcedure<T>)
   private
     FInstance: T;
+    //
+
   public
     constructor Create(aInstance: T);
     destructor Destroy; override;
     class function New(aInstance: T): iSimpleStoreProcedure<T>;
     function ProcName(Out aStoreProcName: String): iSimpleStoreProcedure<T>;
     function ProcResult(var aResult: String): iSimpleStoreProcedure<T>;
+    function StoreProcName(var aStoreProcName: String)
+      : iSimpleStoreProcedure<T>;
+    function StoreProcNameSel(var aStoreProcName: String)
+      : iSimpleStoreProcedure<T>;
+    function StoreProcNameDel(var aStoreProcName: String)
+      : iSimpleStoreProcedure<T>;
+    function Instance: T;
   end;
 
 implementation
@@ -61,32 +70,63 @@ begin
   inherited;
 end;
 
-class function TSimpleSP<T>.New(aInstance: T)
-  : iSimpleStoreProcedure<T>;
+function TSimpleSP<T>.Instance: T;
 begin
-  Result := Self.Create(aInstance);
+  result := FInstance;
+end;
+
+class function TSimpleSP<T>.New(aInstance: T): iSimpleStoreProcedure<T>;
+begin
+  result := Self.Create(aInstance);
 end;
 
 function TSimpleSP<T>.ProcName(out aStoreProcName: String)
   : iSimpleStoreProcedure<T>;
-{ Retorna o nome da Store Procedure }
 var
   lProcedureName: String;
 begin
-  Result := Self;
+  result := Self;
   TSimpleRTTI<T>.New(FInstance).StoreProcName(lProcedureName);
   aStoreProcName := lProcedureName;
 end;
 
-function TSimpleSP<T>.ProcResult(var aResult: String)
-  : iSimpleStoreProcedure<T>;
-{ Busca o atribuito de Retorno da Store Procedure }
+function TSimpleSP<T>.ProcResult(var aResult: String): iSimpleStoreProcedure<T>;
 var
   lResult: String;
 begin
-  Result := Self;
+  result := Self;
   TSimpleRTTI<T>.New(FInstance).StoreProcResult(lResult);
   aResult := lResult;
+end;
+
+function TSimpleSP<T>.StoreProcName(var aStoreProcName: String)
+  : iSimpleStoreProcedure<T>;
+var
+  lProcedureName: String;
+begin
+  result := Self;
+  TSimpleRTTI<T>.New(FInstance).StoreProcName(lProcedureName);
+  aStoreProcName := lProcedureName;
+end;
+
+function TSimpleSP<T>.StoreProcNameDel(var aStoreProcName: String)
+  : iSimpleStoreProcedure<T>;
+var
+  lProcedureName: String;
+begin
+  result := Self;
+  TSimpleRTTI<T>.New(FInstance).StoreProcDel(lProcedureName);
+  aStoreProcName := lProcedureName;
+end;
+
+function TSimpleSP<T>.StoreProcNameSel(var aStoreProcName: String)
+  : iSimpleStoreProcedure<T>;
+var
+  lProcedureName: String;
+begin
+  result := Self;
+  TSimpleRTTI<T>.New(FInstance).StoreProcSel(lProcedureName);
+  aStoreProcName := lProcedureName;
 end;
 
 end.
