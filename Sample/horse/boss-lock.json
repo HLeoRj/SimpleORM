@@ -8,14 +8,6 @@
 			"hash": "533f53d4f7f3f64544271a4dda9c227c",
 			"artifacts": {},
 			"failed": false,
-			"changed": true
-		},
-		"https://github.com/bittencourtthulio/simpleorm": {
-			"name": "simpleorm",
-			"version": "master",
-			"hash": "98659a59ec2fa2a1e351115e4898b013",
-			"artifacts": {},
-			"failed": false,
 			"changed": false
 		},
 		"https://github.com/ezequieljuliano/datasetconverter4delphi": {
@@ -46,6 +38,14 @@
 			"name": "jhonson",
 			"version": "1.0.5",
 			"hash": "34d01183ef1b6af802c7e132adedeae5",
+			"artifacts": {},
+			"failed": false,
+			"changed": false
+		},
+		"https://github.com/hleorj/simpleorm": {
+			"name": "SimpleORM",
+			"version": "master",
+			"hash": "5277013082c0caab6d7d18ac9fd79af6",
 			"artifacts": {},
 			"failed": false,
 			"changed": false
