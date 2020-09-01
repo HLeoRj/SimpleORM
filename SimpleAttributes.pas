@@ -36,10 +36,10 @@ type
     FField: String;
     procedure SetField(const Value: String);
   published
-    constructor Create (aField : String);
-    property Field : String read FField write SetField;
+    constructor Create(aField: String);
+    property Field: String read FField write SetField;
   end;
-  
+
   ProceName = class(TCustomAttribute)
   private
     FName: String;
@@ -48,7 +48,31 @@ type
     property Name: String read FName write FName;
   end;
 
-  FieldResult = class(TCustomAttribute)
+  ResultProc = class(TCustomAttribute)
+  private
+    FName: String;
+  public
+    constructor Create(Const aName: String);
+    property Name: String read FName write FName;
+  end;
+
+  ProcImput = class(TCustomAttribute)
+  private
+    FName: String;
+  public
+    constructor Create(Const aName: String);
+    property Name: String read FName write FName;
+  end;
+
+  ProceSel = class(TCustomAttribute)
+  private
+    FName: String;
+  public
+    constructor Create(Const aName: String);
+    property Name: String read FName write FName;
+  end;
+
+  ProceDel = class(TCustomAttribute)
   private
     FName: String;
   public
@@ -57,7 +81,6 @@ type
   end;
 
 implementation
-
 
 { Bind }
 
@@ -92,9 +115,30 @@ begin
   FName := aName;
 end;
 
-{ FieldResult }
+{ ResultProc }
 
-constructor FieldResult.Create(const aName: String);
+constructor ResultProc.Create(const aName: String);
+begin
+  FName := aName;
+end;
+
+{ ProceSel }
+
+constructor ProceSel.Create(const aName: String);
+begin
+  FName := aName;
+end;
+
+{ ProceDel }
+
+constructor ProceDel.Create(const aName: String);
+begin
+  FName := aName;
+end;
+
+{ ProcImput }
+
+constructor ProcImput.Create(const aName: String);
 begin
   FName := aName;
 end;
