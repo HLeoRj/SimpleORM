@@ -11,15 +11,13 @@ uses
   {$IFNDEF CONSOLE}
   VCL.Forms,
   {$ENDIF}
-  SimpleDAOSQLAttribute;
+  SimpleDAOSQLAttribute,
+  System.Threading;
 
 Type
   TSimpleDAO<T: class, constructor> = class(TInterfacedObject, iSimpleDAO<T>)
     private
       FQuery : iSimpleQuery;
-      FDictionaryFields : TDictionary<string, variant>;
-      FFields, FWhere, FUpdate, FParam : String;
-      FClassName : String;
       FDataSource : TDataSource;
       FSQLAttribute : iSimpleDAOSQLAttribute<T>;
       {$IFNDEF CONSOLE}
@@ -38,6 +36,7 @@ Type
       function Update(aValue : T) : iSimpleDAO<T>; overload;
       function Delete(aValue : T) : iSimpleDAO<T>; overload;
       function Delete(aField : String; aValue : String) : iSimpleDAO<T>; overload;
+      function LastID : iSimpleDAO<T>;
       {$IFNDEF CONSOLE}
       function Insert: iSimpleDAO<T>; overload;
       function Update : iSimpleDAO<T>; overload;
@@ -172,13 +171,13 @@ function TSimpleDAO<T>.Find(aId: Integer): T;
 var
   aSQL : String;
 begin
-  Result := T.Create;
-  TSimpleSQL<T>.New(nil).SelectId(aSQL);
-  FQuery.SQL.Clear;
-  FQuery.SQL.Add(aSQL);
-  Self.FillParameter(Result, aId);
-  FQuery.Open;
-  TSimpleRTTI<T>.New(nil).DataSetToEntity(FQuery.DataSet, Result);
+      Result := T.Create;
+      TSimpleSQL<T>.New(nil).SelectId(aSQL);
+      FQuery.SQL.Clear;
+      FQuery.SQL.Add(aSQL);
+      Self.FillParameter(Result, aId);
+      FQuery.Open;
+      TSimpleRTTI<T>.New(nil).DataSetToEntity(FQuery.DataSet, Result);
 end;
 
 {$IFNDEF CONSOLE}
@@ -200,7 +199,14 @@ begin
     FreeAndNil(Entity);
   end;
 end;
+
 {$ENDIF}
+
+function TSimpleDAO<T>.LastID: iSimpleDAO<T>;
+begin
+  Result := Self;
+  FQuery.Open('SELECT LAST_INSERT_ID() as ID');
+end;
 
 function TSimpleDAO<T>.Find(var aList: TObjectList<T>): iSimpleDAO<T>;
 var
