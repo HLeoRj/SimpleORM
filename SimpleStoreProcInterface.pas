@@ -31,8 +31,7 @@ interface
 uses
   System.Classes,
   System.Generics.Collections,
-  Data.DB,
-  FireDAC.Comp.Client, System.Rtti;
+  System.Rtti;
 
 type
 
@@ -44,13 +43,15 @@ type
       : iSimpleStoreProc;
     function ExecProc: iSimpleStoreProc;
     function ResultProc(aPrpRtti: TRttiProperty; aCampo: String): TValue;
-    function Return(Const aNome: String; Out aValue: Variant ) : iSimpleStoreProc;    
+    function Return(Const aNome: String; Out aValue: variant): iSimpleStoreProc;
   end;
 
   iSimpleDAOStoreProc<T: class> = interface
     ['{E9014B4A-EA81-4F14-AA9B-4B7FE03C4E81}']
-    function Find(const aID: integer; var aObject: T) : iSimpleDAOStoreProc<T>; overload;
-    function Find(const aID: String; var aObject: T) : iSimpleDAOStoreProc<T>; overload;
+    function Find(const aID: integer; var aObject: T)
+      : iSimpleDAOStoreProc<T>; overload;
+    function Find(const aID: String; var aObject: T)
+      : iSimpleDAOStoreProc<T>; overload;
     function Update(aValue: T): iSimpleDAOStoreProc<T>; overload;
     function StoreProcedureToEntity: T;
     function Instance: T;

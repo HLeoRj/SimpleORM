@@ -1,5 +1,5 @@
 { ****************************************************************************** }
-{ Projeto: Componente SimpleOrm }
+{ Projeto: Componente }
 { Colaboradores nesse arquivo: }
 { }
 { Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la }
@@ -21,7 +21,6 @@
 { Arquivo SimpleStoreProcFiredac.pas }
 { Desenvolvido e escrito por : Henrique Leonardo - hleonardo@yahoo.com.br }
 { Skype / Telegram : hleorj }
-{ Sendo a mesma doada ao Projeto: Componente SimpleOrm }
 { **************************************************************************** }
 
 unit SimpleStoreProcFiredac;
@@ -29,15 +28,16 @@ unit SimpleStoreProcFiredac;
 interface
 
 uses
-  SimpleStoreProcInterface,
   System.Classes,
   System.SysUtils,
+  System.Rtti,
   Data.DB,
   FireDAC.Comp.Client,
   FireDAC.Stan.Param,
   FireDAC.DatS,
   FireDAC.DApt.Intf,
-  FireDAC.DApt, System.Rtti;
+  FireDAC.DApt,
+  SimpleStoreProcInterface;
 
 Type
   TSimpleStoreProcFiredac = class(TInterfacedObject, iSimpleStoreProc)
@@ -54,7 +54,7 @@ Type
       : iSimpleStoreProc;
     function ExecProc: iSimpleStoreProc;
     function ResultProc(aPrpRtti: TRttiProperty; aCampo: String): TValue;
-    function Return(Const aNome: String; Out aValue: Variant ) : iSimpleStoreProc;    
+    function Return(Const aNome: String; Out aValue: variant): iSimpleStoreProc;
   end;
 
 implementation
@@ -142,13 +142,14 @@ begin
     FStoreProce.Params.CreateParam(ftVariant, aNome, ptInput).Value := aValue;
 end;
 
-function TSimpleStoreProcFiredac.Return(Const aNome: String; out aValue: Variant ) : iSimpleStoreProc;
+function TSimpleStoreProcFiredac.Return(Const aNome: String;
+  out aValue: variant): iSimpleStoreProc;
 begin
-  result := self;
+  Result := Self;
   if FStoreProce.Params.FindParam(aNome) <> nil then
-   aValue := FStoreProce.Params.ParamByName(aNome).Value
+    aValue := FStoreProce.Params.ParamByName(aNome).Value
   else
-    aValue := FStoreProce.Params.CreateParam( ftVariant , aNome , ptResult ).Value;
+    aValue := FStoreProce.Params.CreateParam(ftVariant, aNome, ptResult).Value;
 end;
 
 end.

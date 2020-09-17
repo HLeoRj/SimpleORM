@@ -1,5 +1,5 @@
 { ****************************************************************************** }
-{ Projeto: Componente SimpleOrm }
+{ Projeto: Componente }
 { Colaboradores nesse arquivo: }
 { }
 { Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la }
@@ -21,7 +21,6 @@
 { Arquivo SimpleSP.pas }
 { Desenvolvido e escrito por : Henrique Leonardo - hleonardo@yahoo.com.br }
 { Skype / Telegram : hleorj }
-{ Sendo a mesma doada ao Projeto: Componente SimpleOrm }
 { **************************************************************************** }
 
 unit SimpleSP;
@@ -35,8 +34,6 @@ Type
   TSimpleSP<T: class, constructor> = class(TInterfacedObject, iSimpleStoreProcedure<T>)
   private
     FInstance: T;
-    //
-
   public
     constructor Create(aInstance: T);
     destructor Destroy; override;

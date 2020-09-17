@@ -88,92 +88,85 @@ uses
   System.RTTI,
   Data.DB,
   TypInfo,
-{$IFNDEF CONSOLE}
+  {$IFNDEF CONSOLE}
   VCL.Forms,
   VCL.StdCtrls,
-  VCL.ExtCtrls,
-{$ENDIF}
-  System.Classes;
+  Vcl.ExtCtrls,
+  {$ENDIF}
+  System.Classes,
+  System.SysUtils;
 
 Type
-  TSimpleRTTI<T: class, constructor> = class(TInterfacedObject, iSimpleRTTI<T>)
-  private
-    FInstance: T;
-    function __findRTTIField(ctxRtti: TRttiContext; classe: TClass;
-      const Field: String): TRttiField;
-    function __FloatFormat(aValue: String): Currency;
-{$IFNDEF CONSOLE}
-    function __BindValueToComponent(aComponent: TComponent; aValue: Variant)
-      : iSimpleRTTI<T>;
-    function __GetComponentToValue(aComponent: TComponent): TValue;
-{$ENDIF}
-    function __BindValueToProperty(aEntity: T; aProperty: TRttiProperty;
-      aValue: TValue): iSimpleRTTI<T>;
+  ESimpleRTTI = Exception;
 
-    function __GetRTTIPropertyValue(aEntity: T; aPropertyName: String): Variant;
-    function __GetRTTIProperty(aEntity: T; aPropertyName: String)
-      : TRttiProperty;
-  public
-    constructor Create(aInstance: T);
-    destructor Destroy; override;
-    class function New(aInstance: T): iSimpleRTTI<T>;
-    function TableName(var aTableName: String): iSimpleRTTI<T>;
+  TSimpleRTTI<T : class, constructor> = class(TInterfacedObject, iSimpleRTTI<T>)
+    private
+      FInstance : T;
+      function __findRTTIField(ctxRtti : TRttiContext; classe: TClass; const Field: String): TRttiField;
+      function __FloatFormat( aValue : String ) : Currency;
+      {$IFNDEF CONSOLE}
+      function __BindValueToComponent( aComponent : TComponent; aValue : Variant) : iSimpleRTTI<T>;
+      function __GetComponentToValue( aComponent : TComponent) : TValue;
+      {$ENDIF}
+      function __BindValueToProperty( aEntity : T; aProperty : TRttiProperty; aValue : TValue) : iSimpleRTTI<T>;
 
-    function Fields(var aFields: String): iSimpleRTTI<T>;
-    function FieldsInsert(var aFields: String): iSimpleRTTI<T>;
-    function Param(var aParam: String): iSimpleRTTI<T>;
-    function Where(var aWhere: String): iSimpleRTTI<T>;
-    function Update(var aUpdate: String): iSimpleRTTI<T>;
-    function DictionaryFields(var aDictionary: TDictionary<string, Variant>)
-      : iSimpleRTTI<T>;
-    function ListFields(var List: TList<String>): iSimpleRTTI<T>;
-    function ClassName(var aClassName: String): iSimpleRTTI<T>;
-    function DataSetToEntityList(aDataSet: TDataSet; var aList: TObjectList<T>)
-      : iSimpleRTTI<T>;
-    function DataSetToEntity(aDataSet: TDataSet; var aEntity: T)
-      : iSimpleRTTI<T>;
-    function StoreProcName(var aStoreProcName : String) : iSimpleRTTI<T>;
-    function StoreProcResult(var aResult : String) : iSimpleRTTI<T>;
-    function StoreProcSel(var aStoreProcName : String) : iSimpleRTTI<T>;
-    function StoreProcDel(var aStoreProcName : String) : iSimpleRTTI<T>;
-    function DictionaryFieldsImput(var aDictionary: TDictionary<string, Variant>): iSimpleRTTI<T>;
-{$IFNDEF CONSOLE}
-    function BindClassToForm(aForm: TForm; const aEntity: T): iSimpleRTTI<T>;
-    function BindFormToClass(aForm: TForm; var aEntity: T): iSimpleRTTI<T>;
-{$ENDIF}
-    function Instance: T;
+      function __GetRTTIPropertyValue(aEntity : T; aPropertyName : String) : Variant;
+      function __GetRTTIProperty(aEntity : T; aPropertyName : String) : TRttiProperty;
+    public
+      constructor Create( aInstance : T );
+      destructor Destroy; override;
+      class function New( aInstance : T ) : iSimpleRTTI<T>;
+      function TableName(var aTableName: String): ISimpleRTTI<T>;
+      function Fields (var aFields : String) : iSimpleRTTI<T>;
+      function FieldsInsert (var aFields : String) : iSimpleRTTI<T>;
+      function Param (var aParam : String) : iSimpleRTTI<T>;
+      function Where (var aWhere : String) : iSimpleRTTI<T>;
+      function Update(var aUpdate : String) : iSimpleRTTI<T>;
+      function DictionaryFields(var aDictionary : TDictionary<string, variant>) : iSimpleRTTI<T>;
+      function ListFields (var List : TList<String>) : iSimpleRTTI<T>;
+      function ClassName (var aClassName : String) : iSimpleRTTI<T>;
+      function DataSetToEntityList (aDataSet : TDataSet; var aList : TObjectList<T>) : iSimpleRTTI<T>;
+      function DataSetToEntity (aDataSet : TDataSet; var aEntity : T) : iSimpleRTTI<T>;
+      {$IFNDEF CONSOLE}
+      function BindClassToForm (aForm : TForm; const aEntity : T): iSimpleRTTI<T>;
+      function BindFormToClass (aForm : TForm; var aEntity : T) : iSimpleRTTI<T>;
+      {$ENDIF}
+	    function StoreProcName(var aStoreProcName : String) : iSimpleRTTI<T>;
+      function StoreProcResult(var aResult : String) : iSimpleRTTI<T>;
+      function StoreProcSel(var aStoreProcName : String) : iSimpleRTTI<T>;
+      function StoreProcDel(var aStoreProcName : String) : iSimpleRTTI<T>;
+      function DictionaryFieldsImput(var aDictionary: TDictionary<string, Variant>): iSimpleRTTI<T>;
+      function Instance: T;
   end;
 
 implementation
 
 uses
-  System.SysUtils,
   SimpleAttributes,
-{$IFNDEF CONSOLE}
-  VCL.ComCtrls,
-{$ENDIF}
-  Variants;
+  {$IFNDEF CONSOLE}
+  Vcl.ComCtrls,
+  Vcl.Graphics,
+  {$ENDIF}
+  Variants,
+  SimpleRTTIHelper,
+  System.UITypes;
 
 { TSimpleRTTI }
 
 {$IFNDEF CONSOLE}
-
 function TSimpleRTTI<T>.__BindValueToComponent(aComponent: TComponent;
   aValue: Variant): iSimpleRTTI<T>;
 begin
-  if VarIsNull(aValue) then
-    exit;
+  if VarIsNull(aValue) then exit;
 
   if aComponent is TEdit then
     (aComponent as TEdit).Text := aValue;
 
   if aComponent is TComboBox then
-    (aComponent as TComboBox).ItemIndex := (aComponent as TComboBox)
-      .Items.IndexOf(aValue);
+    (aComponent as TComboBox).ItemIndex := (aComponent as TComboBox).Items.IndexOf(aValue);
 
   if aComponent is TRadioGroup then
-    (aComponent as TRadioGroup).ItemIndex := (aComponent as TRadioGroup)
-      .Items.IndexOf(aValue);
+    (aComponent as TRadioGroup).ItemIndex := (aComponent as TRadioGroup).Items.IndexOf(aValue);
 
   if aComponent is TCheckBox then
     (aComponent as TCheckBox).Checked := aValue;
@@ -189,69 +182,38 @@ begin
 end;
 {$ENDIF}
 
-function TSimpleRTTI<T>.__BindValueToProperty(aEntity: T;
-  aProperty: TRttiProperty; aValue: TValue): iSimpleRTTI<T>;
+function TSimpleRTTI<T>.__BindValueToProperty( aEntity : T; aProperty : TRttiProperty; aValue : TValue) : iSimpleRTTI<T>;
 begin
   case aProperty.PropertyType.TypeKind of
-    tkUnknown:
-      ;
-    tkInteger:
-      aProperty.SetValue(Pointer(aEntity), StrToInt(aValue.ToString));
-    tkChar:
-      ;
-    tkEnumeration:
-      ;
+    tkUnknown: ;
+    tkInteger: aProperty.SetValue(Pointer(aEntity), StrToInt(aValue.ToString));
+    tkChar: ;
+    tkEnumeration: ;
     tkFloat:
-      begin
-        try
-          aProperty.SetValue(Pointer(aEntity), StrToFloat(aValue.ToString));
-        except
-          try
-            aProperty.SetValue(Pointer(aEntity),
-              StrToDateTime(aValue.ToString));
-          except
-            raise Exception.Create('Erro na Conversao de Float');
-          end;
-        end;
-      end;
-    tkString:
+    begin
+      if (aValue.TypeInfo = TypeInfo(TDate))
+        or (aValue.TypeInfo = TypeInfo(TTime))
+        or (aValue.TypeInfo = TypeInfo(TDateTime)) then
+        aProperty.SetValue(Pointer(aEntity), StrToDateTime(aValue.ToString))
+      else
+        aProperty.SetValue(Pointer(aEntity), StrToFloat(aValue.ToString));
+    end;
+    tkSet: ;
+    tkClass: ;
+    tkMethod: ;
+    tkString, tkWChar, tkLString, tkWString, tkVariant, tkUString:
       aProperty.SetValue(Pointer(aEntity), aValue);
-    tkSet:
-      ;
-    tkClass:
-      ;
-    tkMethod:
-      ;
-    tkWChar:
+    tkArray: ;
+    tkRecord: ;
+    tkInterface: ;
+    tkInt64: aProperty.SetValue(Pointer(aEntity), aValue.Cast<Int64>);
+    tkDynArray: ;
+    tkClassRef: ;
+    tkPointer: ;
+    tkProcedure: ;
+    tkMRecord: ;
+    else
       aProperty.SetValue(Pointer(aEntity), aValue);
-    tkLString:
-      aProperty.SetValue(Pointer(aEntity), aValue);
-    tkWString:
-      aProperty.SetValue(Pointer(aEntity), aValue);
-    tkVariant:
-      aProperty.SetValue(Pointer(aEntity), aValue);
-    tkArray:
-      ;
-    tkRecord:
-      ;
-    tkInterface:
-      ;
-    tkInt64:
-      aProperty.SetValue(Pointer(aEntity), aValue.Cast<Int64>);
-    tkDynArray:
-      ;
-    tkUString:
-      aProperty.SetValue(Pointer(aEntity), aValue);
-    tkClassRef:
-      ;
-    tkPointer:
-      ;
-    tkProcedure:
-      ;
-    tkMRecord:
-      ;
-  else
-    aProperty.SetValue(Pointer(aEntity), aValue);
   end;
 
 end;
@@ -259,22 +221,21 @@ end;
 function TSimpleRTTI<T>.__findRTTIField(ctxRtti: TRttiContext; classe: TClass;
   const Field: String): TRttiField;
 var
-  typRtti: TRttiType;
+  typRtti : TRttiType;
 begin
   typRtti := ctxRtti.GetType(classe.ClassInfo);
-  Result := typRtti.GetField(Field);
+  Result  := typRtti.GetField(Field);
 end;
 
-function TSimpleRTTI<T>.__FloatFormat(aValue: String): Currency;
+function TSimpleRTTI<T>.__FloatFormat( aValue : String ) : Currency;
 begin
   while Pos('.', aValue) > 0 do
-    delete(aValue, Pos('.', aValue), 1);
+    delete(aValue,Pos('.', aValue),1);
 
   Result := StrToCurr(aValue);
 end;
 
 {$IFNDEF CONSOLE}
-
 function TSimpleRTTI<T>.__GetComponentToValue(aComponent: TComponent): TValue;
 var
   a: string;
@@ -283,12 +244,10 @@ begin
     Result := TValue.FromVariant((aComponent as TEdit).Text);
 
   if aComponent is TComboBox then
-    Result := TValue.FromVariant((aComponent as TComboBox)
-      .Items[(aComponent as TComboBox).ItemIndex]);
+    Result := TValue.FromVariant((aComponent as TComboBox).Items[(aComponent as TComboBox).ItemIndex]);
 
   if aComponent is TRadioGroup then
-    Result := TValue.FromVariant((aComponent as TRadioGroup)
-      .Items[(aComponent as TRadioGroup).ItemIndex]);
+    Result := TValue.FromVariant((aComponent as TRadioGroup).Items[(aComponent as TRadioGroup).ItemIndex]);
 
   if aComponent is TCheckBox then
     Result := TValue.FromVariant((aComponent as TCheckBox).Checked);
@@ -302,20 +261,25 @@ begin
   if aComponent is TShape then
     Result := TValue.FromVariant((aComponent as TShape).Brush.Color);
 
-  a := Result.ToString;
+  a := Result.TOString;
 end;
 {$ENDIF}
 
-function TSimpleRTTI<T>.__GetRTTIProperty(aEntity: T; aPropertyName: String)
-  : TRttiProperty;
+function TSimpleRTTI<T>.__GetRTTIProperty(aEntity: T;
+  aPropertyName: String): TRttiProperty;
 var
-  ctxRttiEntity: TRttiContext;
-  typRttiEntity: TRttiType;
+  ctxRttiEntity : TRttiContext;
+  typRttiEntity : TRttiType;
 begin
   ctxRttiEntity := TRttiContext.Create;
   try
     typRttiEntity := ctxRttiEntity.GetType(aEntity.ClassInfo);
     Result := typRttiEntity.GetProperty(aPropertyName);
+    if not Assigned(Result) then
+      Result := typRttiEntity.GetPropertyFromAttribute<Campo>(aPropertyName);
+
+    if not Assigned(Result) then
+      raise ESimpleRTTI.Create('Property ' + aPropertyName + ' not found!');
   finally
     ctxRttiEntity.Free;
   end;
@@ -324,31 +288,17 @@ end;
 
 function TSimpleRTTI<T>.__GetRTTIPropertyValue(aEntity: T;
   aPropertyName: String): Variant;
-var
-  ctxRttiEntity: TRttiContext;
-  typRttiEntity: TRttiType;
-  prpRttiPropEntity: TRttiProperty;
 begin
-  ctxRttiEntity := TRttiContext.Create;
-  try
-    typRttiEntity := ctxRttiEntity.GetType(aEntity.ClassInfo);
-    prpRttiPropEntity := typRttiEntity.GetProperty(aPropertyName);
-    Result := prpRttiPropEntity.GetValue(Pointer(aEntity)).AsVariant;
-  finally
-    ctxRttiEntity.Free;
-  end;
-
+  Result := __GetRTTIProperty(aEntity, aPropertyName).GetValue(Pointer(aEntity)).AsVariant;
 end;
 
 {$IFNDEF CONSOLE}
-
-function TSimpleRTTI<T>.BindClassToForm(aForm: TForm; const aEntity: T)
-  : iSimpleRTTI<T>;
+function TSimpleRTTI<T>.BindClassToForm(aForm: TForm;
+  const aEntity: T): iSimpleRTTI<T>;
 var
-  ctxRtti: TRttiContext;
-  typRtti: TRttiType;
-  prpRtti: TRttiField;
-  Attribute: TCustomAttribute;
+  ctxRtti : TRttiContext;
+  typRtti : TRttiType;
+  prpRtti : TRttiField;
 begin
   Result := Self;
   ctxRtti := TRttiContext.Create;
@@ -356,11 +306,15 @@ begin
     typRtti := ctxRtti.GetType(aForm.ClassInfo);
     for prpRtti in typRtti.GetFields do
     begin
-      for Attribute in prpRtti.GetAttributes do
+      if prpRtti.Tem<Bind> then
       begin
-        if (Attribute is Bind) then
-          __BindValueToComponent(aForm.FindComponent(prpRtti.Name),
-            __GetRTTIPropertyValue(aEntity, Bind(Attribute).Field));
+        __BindValueToComponent(
+                          aForm.FindComponent(prpRtti.Name),
+                          __GetRTTIPropertyValue(
+                                                   aEntity,
+                                                   prpRtti.GetAttribute<Bind>.Field
+                          )
+        );
       end;
     end;
   finally
@@ -368,13 +322,12 @@ begin
   end;
 end;
 
-function TSimpleRTTI<T>.BindFormToClass(aForm: TForm; var aEntity: T)
-  : iSimpleRTTI<T>;
+function TSimpleRTTI<T>.BindFormToClass(aForm: TForm;
+  var aEntity: T): iSimpleRTTI<T>;
 var
-  ctxRtti: TRttiContext;
-  typRtti: TRttiType;
-  prpRtti: TRttiField;
-  Attribute: TCustomAttribute;
+  ctxRtti : TRttiContext;
+  typRtti : TRttiType;
+  prpRtti : TRttiField;
 begin
   Result := Self;
   ctxRtti := TRttiContext.Create;
@@ -382,12 +335,13 @@ begin
     typRtti := ctxRtti.GetType(aForm.ClassInfo);
     for prpRtti in typRtti.GetFields do
     begin
-      for Attribute in prpRtti.GetAttributes do
+      if prpRtti.Tem<Bind> then
       begin
-        if (Attribute is Bind) then
-          __BindValueToProperty(aEntity, __GetRTTIProperty(aEntity,
-            Bind(Attribute).Field),
-            __GetComponentToValue(aForm.FindComponent(prpRtti.Name)));
+        __BindValueToProperty(
+          aEntity,
+          __GetRTTIProperty(aEntity, prpRtti.GetAttribute<Bind>.Field),
+          __GetComponentToValue(aForm.FindComponent(prpRtti.Name))
+        );
       end;
     end;
   finally
@@ -396,11 +350,11 @@ begin
 end;
 {$ENDIF}
 
-function TSimpleRTTI<T>.ClassName(var aClassName: String): iSimpleRTTI<T>;
+function TSimpleRTTI<T>.ClassName (var aClassName : String) : iSimpleRTTI<T>;
 var
-  Info: PTypeInfo;
-  ctxRtti: TRttiContext;
-  typRtti: TRttiType;
+  Info      : PTypeInfo;
+  ctxRtti   : TRttiContext;
+  typRtti   : TRttiType;
 begin
   Result := Self;
   Info := System.TypeInfo(T);
@@ -413,21 +367,21 @@ begin
   end;
 end;
 
-constructor TSimpleRTTI<T>.Create(aInstance: T);
+constructor TSimpleRTTI<T>.Create( aInstance : T );
 begin
   FInstance := aInstance;
 end;
 
-function TSimpleRTTI<T>.DataSetToEntity(aDataSet: TDataSet; var aEntity: T)
-  : iSimpleRTTI<T>;
+function TSimpleRTTI<T>.DataSetToEntity(aDataSet: TDataSet;
+  var aEntity: T): iSimpleRTTI<T>;
 var
-  Field: TField;
+  Field : TField;
   teste: string;
-  ctxRtti: TRttiContext;
-  typRtti: TRttiType;
-  prpRtti: TRttiProperty;
-  Info: PTypeInfo;
-  Value: TValue;
+  ctxRtti   : TRttiContext;
+  typRtti   : TRttiType;
+  prpRtti   : TRttiProperty;
+  Info     : PTypeInfo;
+  Value : TValue;
 begin
   Result := Self;
   aDataSet.First;
@@ -438,60 +392,34 @@ begin
     try
       for Field in aDataSet.Fields do
       begin
-        typRtti := ctxRtti.GetType(Info);
-        for prpRtti in typRtti.GetProperties do
-        begin
-          if prpRtti.Name = Field.DisplayName then
+          typRtti := ctxRtti.GetType(Info);
+          for prpRtti in typRtti.GetProperties do
           begin
-            case prpRtti.PropertyType.TypeKind of
-              tkUnknown:
-                Value := Field.AsString;
-              tkInteger:
-                Value := Field.AsInteger;
-              tkChar:
-                ;
-              tkEnumeration:
-                ;
-              tkFloat:
-                Value := Field.AsFloat;
-              tkString:
-                Value := Field.AsString;
-              tkSet:
-                ;
-              tkClass:
-                ;
-              tkMethod:
-                ;
-              tkWChar:
-                Value := Field.AsString;
-              tkLString:
-                Value := Field.AsString;
-              tkWString:
-                Value := Field.AsString;
-              tkVariant:
-                ;
-              tkArray:
-                ;
-              tkRecord:
-                ;
-              tkInterface:
-                ;
-              tkInt64:
-                Value := Field.AsInteger;
-              tkDynArray:
-                ;
-              tkUString:
-                Value := Field.AsString;
-              tkClassRef:
-                ;
-              tkPointer:
-                ;
-              tkProcedure:
-                ;
+            if LowerCase(prpRtti.FieldName) = LowerCase(Field.DisplayName) then
+            begin
+              case prpRtti.PropertyType.TypeKind of
+                tkUnknown, tkString, tkWChar, tkLString, tkWString, tkUString:
+                  Value := Field.AsString;
+                tkInteger, tkInt64:
+                  Value := Field.AsInteger;
+                tkChar: ;
+                tkEnumeration: ;
+                tkFloat: Value := Field.AsFloat;
+                tkSet: ;
+                tkClass: ;
+                tkMethod: ;
+                tkVariant: ;
+                tkArray: ;
+                tkRecord: ;
+                tkInterface: ;
+                tkDynArray: ;
+                tkClassRef: ;
+                tkPointer: ;
+                tkProcedure: ;
+              end;
+              prpRtti.SetValue(Pointer(aEntity), Value);
             end;
-            prpRtti.SetValue(Pointer(aEntity), Value);
           end;
-        end;
       end;
     finally
       ctxRtti.Free;
@@ -504,15 +432,13 @@ end;
 function TSimpleRTTI<T>.DataSetToEntityList(aDataSet: TDataSet;
   var aList: TObjectList<T>): iSimpleRTTI<T>;
 var
-  Field: TField;
+  Field : TField;
   teste: string;
-  ctxRtti: TRttiContext;
-  typRtti: TRttiType;
-  prpRtti: TRttiProperty;
-  Info: PTypeInfo;
-  Value: TValue;
-  Attribute: TCustomAttribute;
-  vCampo: string;
+  ctxRtti   : TRttiContext;
+  typRtti   : TRttiType;
+  prpRtti   : TRttiProperty;
+  Info     : PTypeInfo;
+  Value : TValue;
 begin
   Result := Self;
   aList.Clear;
@@ -527,61 +453,29 @@ begin
         typRtti := ctxRtti.GetType(Info);
         for prpRtti in typRtti.GetProperties do
         begin
-          vCampo := '';
-          for Attribute in prpRtti.GetAttributes do
+          if LowerCase(prpRtti.FieldName) = LowerCase(Field.FieldName) then
           begin
-            if (Attribute is Campo) then
-              vCampo := Campo(Attribute).Name;
-
-          end;
-
-          if vCampo = Field.DisplayName then
-          begin
+            Field.DisplayLabel := prpRtti.DisplayName;
             case prpRtti.PropertyType.TypeKind of
-              tkUnknown:
+              tkUnknown, tkString, tkWChar, tkLString, tkWString, tkUString:
                 Value := Field.AsString;
-              tkInteger:
+              tkInteger, tkInt64:
                 Value := Field.AsInteger;
-              tkChar:
-                ;
-              tkEnumeration:
-                ;
+              tkChar: ;
+              tkEnumeration: ;
               tkFloat:
                 Value := Field.AsFloat;
-              tkString:
-                Value := Field.AsString;
-              tkSet:
-                ;
-              tkClass:
-                ;
-              tkMethod:
-                ;
-              tkWChar:
-                Value := Field.AsString;
-              tkLString:
-                Value := Field.AsString;
-              tkWString:
-                Value := Field.AsString;
-              tkVariant:
-                ;
-              tkArray:
-                ;
-              tkRecord:
-                ;
-              tkInterface:
-                ;
-              tkInt64:
-                Value := Field.AsInteger;
-              tkDynArray:
-                ;
-              tkUString:
-                Value := Field.AsString;
-              tkClassRef:
-                ;
-              tkPointer:
-                ;
-              tkProcedure:
-                ;
+              tkSet: ;
+              tkClass: ;
+              tkMethod: ;
+              tkVariant: ;
+              tkArray: ;
+              tkRecord: ;
+              tkInterface: ;
+              tkDynArray: ;
+              tkClassRef: ;
+              tkPointer: ;
+              tkProcedure: ;
             end;
             prpRtti.SetValue(Pointer(aList[Pred(aList.Count)]), Value);
           end;
@@ -601,17 +495,13 @@ begin
   inherited;
 end;
 
-function TSimpleRTTI<T>.DictionaryFields(var aDictionary
-  : TDictionary<string, Variant>): iSimpleRTTI<T>;
+function TSimpleRTTI<T>.DictionaryFields(var aDictionary : TDictionary<string, variant>) : iSimpleRTTI<T>;
 var
-  ctxRtti: TRttiContext;
-  typRtti: TRttiType;
-  prpRtti: TRttiProperty;
-  Info: PTypeInfo;
-  Attribute: TCustomAttribute;
-  Aux: String;
-  vCampo: string;
-  vIgnore: Boolean;
+  ctxRtti   : TRttiContext;
+  typRtti   : TRttiType;
+  prpRtti   : TRttiProperty;
+  Info     : PTypeInfo;
+  Aux : String;
 begin
   Result := Self;
   Info := System.TypeInfo(T);
@@ -620,43 +510,43 @@ begin
     typRtti := ctxRtti.GetType(Info);
     for prpRtti in typRtti.GetProperties do
     begin
-      vCampo := '';
-      vIgnore := false;
+      if prpRtti.IsIgnore then
+        Continue;
 
-      for Attribute in prpRtti.GetAttributes do
-      begin
-        if (Attribute is Campo) then
-          vCampo := Campo(Attribute).Name;
-
-        if Attribute is Ignore then
-          vIgnore := True;
-      end;
-
-      if not vIgnore then
-      begin
-        case prpRtti.PropertyType.TypeKind of
-          tkInt64, tkInteger:
-            aDictionary.Add(vCampo, prpRtti.GetValue(Pointer(FInstance))
-              .AsInteger);
-          tkFloat:
+      case prpRtti.PropertyType.TypeKind of
+        tkInteger, tkInt64:
+          begin
+            if prpRtti.EhChaveEstrangeira then
             begin
-              if CompareText('TDateTime', prpRtti.PropertyType.Name) = 0 then
-                aDictionary.Add(vCampo,
-                  StrToDateTime(prpRtti.GetValue(Pointer(FInstance)).ToString))
+              if prpRtti.GetValue(Pointer(FInstance)).AsInteger = 0 then
+                aDictionary.Add(prpRtti.FieldName, Null)
               else
-                aDictionary.Add(vCampo,
-                  __FloatFormat(prpRtti.GetValue(Pointer(FInstance)).ToString));
-            end;
-          tkWChar, tkLString, tkWString, tkUString, tkString:
-            aDictionary.Add(vCampo, prpRtti.GetValue(Pointer(FInstance))
-              .AsString);
-          tkVariant:
-            aDictionary.Add(vCampo, prpRtti.GetValue(Pointer(FInstance))
-              .AsVariant);
-        else
-          aDictionary.Add(vCampo, prpRtti.GetValue(Pointer(FInstance))
-            .AsString);
+                aDictionary.Add(prpRtti.FieldName, prpRtti.GetValue(Pointer(FInstance)).AsInteger);
+            end
+            else
+              aDictionary.Add(prpRtti.FieldName, prpRtti.GetValue(Pointer(FInstance)).AsInteger);
+          end;
+        tkFloat       :
+        begin
+          if prpRtti.GetValue(Pointer(FInstance)).TypeInfo = TypeInfo(TDateTime) then
+            aDictionary.Add(prpRtti.FieldName, StrToDateTime(prpRtti.GetValue(Pointer(FInstance)).ToString))
+          else
+          if prpRtti.GetValue(Pointer(FInstance)).TypeInfo = TypeInfo(TDate) then
+              aDictionary.Add(prpRtti.FieldName, StrToDate(prpRtti.GetValue(Pointer(FInstance)).ToString))
+          else
+          if prpRtti.GetValue(Pointer(FInstance)).TypeInfo = TypeInfo(TTime) then
+            aDictionary.Add(prpRtti.FieldName, StrToTime(prpRtti.GetValue(Pointer(FInstance)).ToString))
+          else
+            aDictionary.Add(prpRtti.FieldName, __FloatFormat(prpRtti.GetValue(Pointer(FInstance)).ToString));
         end;
+        tkWChar,
+        tkLString,
+        tkWString,
+        tkUString,
+        tkString      : aDictionary.Add(prpRtti.FieldName, prpRtti.GetValue(Pointer(FInstance)).AsString);
+        tkVariant     : aDictionary.Add(prpRtti.FieldName, prpRtti.GetValue(Pointer(FInstance)).AsVariant);
+      else
+          aDictionary.Add(prpRtti.FieldName, prpRtti.GetValue(Pointer(FInstance)).AsString);
       end;
     end;
   finally
@@ -664,15 +554,12 @@ begin
   end;
 end;
 
-function TSimpleRTTI<T>.Fields(var aFields: String): iSimpleRTTI<T>;
+function TSimpleRTTI<T>.Fields (var aFields : String) : iSimpleRTTI<T>;
 var
-  ctxRtti: TRttiContext;
-  typRtti: TRttiType;
-  prpRtti: TRttiProperty;
-  Info: PTypeInfo;
-  vIgnore: Boolean;
-  Attribute: TCustomAttribute;
-  vCampo: string;
+  ctxRtti   : TRttiContext;
+  typRtti   : TRttiType;
+  prpRtti   : TRttiProperty;
+  Info     : PTypeInfo;
 begin
   Result := Self;
   Info := System.TypeInfo(T);
@@ -681,17 +568,8 @@ begin
     typRtti := ctxRtti.GetType(Info);
     for prpRtti in typRtti.GetProperties do
     begin
-      vIgnore := false;
-      for Attribute in prpRtti.GetAttributes do
-      begin
-        if (Attribute is Campo) then
-          vCampo := Campo(Attribute).Name;
-
-        if Attribute is Ignore then
-          vIgnore := True;
-      end;
-      if not vIgnore then
-        aFields := aFields + vCampo + ', ';
+      if not prpRtti.IsIgnore then
+        aFields := aFields + prpRtti.FieldName + ', ';
     end;
   finally
     aFields := Copy(aFields, 0, Length(aFields) - 2) + ' ';
@@ -701,13 +579,10 @@ end;
 
 function TSimpleRTTI<T>.FieldsInsert(var aFields: String): iSimpleRTTI<T>;
 var
-  ctxRtti: TRttiContext;
-  typRtti: TRttiType;
-  prpRtti: TRttiProperty;
-  Info: PTypeInfo;
-  vIgnore: Boolean;
-  Attribute: TCustomAttribute;
-  vCampo: string;
+  ctxRtti   : TRttiContext;
+  typRtti   : TRttiType;
+  prpRtti   : TRttiProperty;
+  Info     : PTypeInfo;
 begin
   Result := Self;
   Info := System.TypeInfo(T);
@@ -716,20 +591,13 @@ begin
     typRtti := ctxRtti.GetType(Info);
     for prpRtti in typRtti.GetProperties do
     begin
-      vIgnore := false;
-      for Attribute in prpRtti.GetAttributes do
-      begin
-        if (Attribute is Campo) then
-          vCampo := Campo(Attribute).Name;
+      if prpRtti.IsAutoInc then
+        Continue;
 
-        if Attribute is AutoInc then
-          vIgnore := True;
+      if prpRtti.IsIgnore then
+        Continue;
 
-        if Attribute is Ignore then
-          vIgnore := True;
-      end;
-      if not vIgnore then
-        aFields := aFields + vCampo + ', ';
+      aFields := aFields + prpRtti.FieldName + ', ';
     end;
   finally
     aFields := Copy(aFields, 0, Length(aFields) - 2) + ' ';
@@ -737,17 +605,12 @@ begin
   end;
 end;
 
-function TSimpleRTTI<T>.Instance: T;
-begin
-  Result := FInstance;
-end;
-
 function TSimpleRTTI<T>.ListFields(var List: TList<String>): iSimpleRTTI<T>;
 var
-  ctxRtti: TRttiContext;
-  typRtti: TRttiType;
-  prpRtti: TRttiProperty;
-  Info: PTypeInfo;
+  ctxRtti   : TRttiContext;
+  typRtti   : TRttiType;
+  prpRtti   : TRttiProperty;
+  Info     : PTypeInfo;
 begin
   Result := Self;
   if not Assigned(List) then
@@ -758,7 +621,7 @@ begin
     typRtti := ctxRtti.GetType(Info);
     for prpRtti in typRtti.GetProperties do
     begin
-      List.Add(prpRtti.Name);
+        List.Add(prpRtti.Name);
     end;
   finally
     ctxRtti.Free;
@@ -766,20 +629,17 @@ begin
 
 end;
 
-class function TSimpleRTTI<T>.New(aInstance: T): iSimpleRTTI<T>;
+class function TSimpleRTTI<T>.New( aInstance : T ): iSimpleRTTI<T>;
 begin
   Result := Self.Create(aInstance);
 end;
 
-function TSimpleRTTI<T>.Param(var aParam: String): iSimpleRTTI<T>;
+function TSimpleRTTI<T>.Param (var aParam : String) : iSimpleRTTI<T>;
 var
-  ctxRtti: TRttiContext;
-  typRtti: TRttiType;
-  prpRtti: TRttiProperty;
-  Info: PTypeInfo;
-  vIgnore: Boolean;
-  Attribute: TCustomAttribute;
-  vCampo: string;
+  ctxRtti   : TRttiContext;
+  typRtti   : TRttiType;
+  prpRtti   : TRttiProperty;
+  Info     : PTypeInfo;
 begin
   Result := Self;
   Info := System.TypeInfo(T);
@@ -788,60 +648,44 @@ begin
     typRtti := ctxRtti.GetType(Info);
     for prpRtti in typRtti.GetProperties do
     begin
-      vIgnore := false;
-      for Attribute in prpRtti.GetAttributes do
-      begin
-        if (Attribute is Campo) then
-          vCampo := Campo(Attribute).Name;
+      if prpRtti.IsIgnore then
+        Continue;
 
-        if Attribute is Ignore then
-          vIgnore := True;
+      if prpRtti.IsAutoInc then
+        Continue;
 
-        if Attribute is AutoInc then
-          vIgnore := True;
-      end;
-      if not vIgnore then
-        aParam := aParam + ':' + vCampo + ', ';
+      aParam  := aParam + ':' + prpRtti.FieldName + ', ';
     end;
   finally
     aParam := Copy(aParam, 0, Length(aParam) - 2) + ' ';
     ctxRtti.Free;
   end;
-
 end;
 
-function TSimpleRTTI<T>.TableName(var aTableName: String): iSimpleRTTI<T>;
+function TSimpleRTTI<T>.TableName(var aTableName: String): ISimpleRTTI<T>;
 var
-  vInfo: PTypeInfo;
+  vInfo   : PTypeInfo;
   vCtxRtti: TRttiContext;
   vTypRtti: TRttiType;
-  vAttr: TCustomAttribute;
 begin
   Result := Self;
   vInfo := System.TypeInfo(T);
   vCtxRtti := TRttiContext.Create;
   try
     vTypRtti := vCtxRtti.GetType(vInfo);
-    for vAttr in vTypRtti.GetAttributes do
-      if (vAttr is Tabela) then
-      begin
-        aTableName := Tabela(vAttr).Name;
-        Break;
-      end;
+    if vTypRtti.Tem<Tabela> then
+      aTableName := vTypRtti.GetAttribute<Tabela>.Name;
   finally
     vCtxRtti.Free;
   end;
 end;
 
-function TSimpleRTTI<T>.Update(var aUpdate: String): iSimpleRTTI<T>;
+function TSimpleRTTI<T>.Update(var aUpdate : String) : iSimpleRTTI<T>;
 var
-  ctxRtti: TRttiContext;
-  typRtti: TRttiType;
-  prpRtti: TRttiProperty;
-  Info: PTypeInfo;
-  vIgnore: Boolean;
-  Attribute: TCustomAttribute;
-  vCampo: string;
+  ctxRtti   : TRttiContext;
+  typRtti   : TRttiType;
+  prpRtti   : TRttiProperty;
+  Info     : PTypeInfo;
 begin
   Result := Self;
   Info := System.TypeInfo(T);
@@ -850,17 +694,13 @@ begin
     typRtti := ctxRtti.GetType(Info);
     for prpRtti in typRtti.GetProperties do
     begin
-      vIgnore := false;
-      for Attribute in prpRtti.GetAttributes do
-      begin
-        if (Attribute is Campo) then
-          vCampo := Campo(Attribute).Name;
+      if prpRtti.IsIgnore then
+        Continue;
 
-        if Attribute is Ignore then
-          vIgnore := True;
-      end;
-      if not vIgnore then
-        aUpdate := aUpdate + vCampo + ' = :' + vCampo + ', ';
+      if prpRtti.IsAutoInc then
+        Continue;
+
+      aUpdate := aUpdate + prpRtti.FieldName + ' = :' + prpRtti.FieldName + ', ';
     end;
   finally
     aUpdate := Copy(aUpdate, 0, Length(aUpdate) - 2) + ' ';
@@ -868,13 +708,12 @@ begin
   end;
 end;
 
-function TSimpleRTTI<T>.Where(var aWhere: String): iSimpleRTTI<T>;
+function TSimpleRTTI<T>.Where (var aWhere : String) : iSimpleRTTI<T>;
 var
-  ctxRtti: TRttiContext;
-  typRtti: TRttiType;
-  prpRtti: TRttiProperty;
-  Info: PTypeInfo;
-  Attribute: TCustomAttribute;
+  ctxRtti : TRttiContext;
+  typRtti : TRttiType;
+  prpRtti : TRttiProperty;
+  Info : PTypeInfo;
 begin
   Result := Self;
   Info := System.TypeInfo(T);
@@ -883,11 +722,8 @@ begin
     typRtti := ctxRtti.GetType(Info);
     for prpRtti in typRtti.GetProperties do
     begin
-      for Attribute in prpRtti.GetAttributes do
-      begin
-        if Attribute is PK then
-          aWhere := aWhere + prpRtti.Name + ' = :' + prpRtti.Name + ' AND ';
-      end;
+      if prpRtti.EhChavePrimaria then
+        aWhere := aWhere + prpRtti.FieldName + ' = :' + prpRtti.FieldName + ' AND ';
     end;
   finally
     aWhere := Copy(aWhere, 0, Length(aWhere) - 4) + ' ';
@@ -895,23 +731,110 @@ begin
   end;
 end;
 
+function TSimpleRTTI<T>.Instance: T;
+begin
+  Result := FInstance;
+end;
+
 function TSimpleRTTI<T>.StoreProcName(var aStoreProcName: String): iSimpleRTTI<T>;
 { Retorna o nome da Store Procedure }
 var
-  Info      : PTypeInfo;
-  ctxRtti   : TRttiContext;
-  typRtti   : TRttiType;
-  Atributo  : TCustomAttribute;
+  vInfo   : PTypeInfo;
+  vCtxRtti: TRttiContext;
+  vTypRtti: TRttiType;
+begin
+  Result := Self;
+  vInfo := System.TypeInfo(T);
+  vCtxRtti := TRttiContext.Create;
+  try
+    vTypRtti := vCtxRtti.GetType(vInfo);
+    if vTypRtti.Tem<Procename> then
+      aStoreProcName:= vTypRtti.GetAttribute<Procename>.Name;
+  finally
+    vCtxRtti.Free;
+  end;
+end;
+function TSimpleRTTI<T>.StoreProcDel(var aStoreProcName: String)
+  : iSimpleRTTI<T>;
+var
+  vInfo   : PTypeInfo;
+  vCtxRtti: TRttiContext;
+  vTypRtti: TRttiType;
+begin
+  Result := Self;
+  vInfo := System.TypeInfo(T);
+  vCtxRtti := TRttiContext.Create;
+  try
+    vTypRtti := vCtxRtti.GetType(vInfo);
+    if vTypRtti.Tem<ProceDel> then
+      aStoreProcName:= vTypRtti.GetAttribute<ProceDel>.Name;
+  finally
+    vCtxRtti.Free;
+  end;
+end;
+
+function TSimpleRTTI<T>.StoreProcSel(var aStoreProcName: String)
+  : iSimpleRTTI<T>;
+var
+  vInfo   : PTypeInfo;
+  vCtxRtti: TRttiContext;
+  vTypRtti: TRttiType;
+begin
+  Result := Self;
+  vInfo := System.TypeInfo(T);
+  vCtxRtti := TRttiContext.Create;
+  try
+    vTypRtti := vCtxRtti.GetType(vInfo);
+    if vTypRtti.Tem<ProceSel> then
+      aStoreProcName:= vTypRtti.GetAttribute<ProceSel>.Name;
+  finally
+    vCtxRtti.Free;
+  end;
+end;
+
+function TSimpleRTTI<T>.DictionaryFieldsImput(var aDictionary
+  : TDictionary<string, Variant>): iSimpleRTTI<T>;
+var
+  ctxRtti : TRttiContext;
+  typRtti : TRttiType;
+  prpRtti : TRttiProperty;
+  Info  : PTypeInfo;
 begin
   Result := Self;
   Info := System.TypeInfo(T);
   ctxRtti := TRttiContext.Create;
   try
     typRtti := ctxRtti.GetType(Info);
-    for Atributo in typRtti.GetAttributes do
+    for prpRtti in typRtti.GetProperties do
     begin
-      if Atributo is ProceName then
-      aStoreProcName := Uppercase(ProceName(Atributo).Name);
+      if (prpRtti.EhFieldImput) then
+      begin
+        case prpRtti.PropertyType.TypeKind of
+          tkInt64, tkInteger:
+            aDictionary.Add(prpRtti.FieldImput, prpRtti.GetValue(Pointer(FInstance))
+                .AsInteger);
+          tkFloat:
+          begin
+            if CompareText('TDateTime', prpRtti.PropertyType.Name) = 0 then
+              aDictionary.Add(prpRtti.FieldImput,
+              StrToDateTime(prpRtti.GetValue(Pointer(FInstance))
+              .ToString))
+            else
+              aDictionary.Add(prpRtti.FieldImput,
+                __FloatFormat(prpRtti.GetValue(Pointer(FInstance))
+                    .ToString));
+          end;
+          tkWChar, tkLString, tkWString, tkUString, tkString:
+              aDictionary.Add(prpRtti.FieldImput, prpRtti.GetValue(Pointer(FInstance))
+                .AsString);
+          tkVariant:
+              aDictionary.Add(prpRtti.FieldImput, prpRtti.GetValue(Pointer(FInstance))
+                .AsVariant);
+          else
+            aDictionary.Add(prpRtti.FieldImput, prpRtti.GetValue(Pointer(FInstance))
+              .AsString);
+        end;
+      end;
     end;
   finally
     ctxRtti.Free;
@@ -921,93 +844,10 @@ end;
 function TSimpleRTTI<T>.StoreProcResult(var aResult : String): iSimpleRTTI<T>;
 { Retorna o nome da Store Procedure }
 var
-  Info      : PTypeInfo;
-  Prop      : TRttiProperty;
-  ctxRtti   : TRttiContext;
-  typRtti   : TRttiType;
-  Atributo  : TCustomAttribute;
-begin
-  Result := Self;
-  Info := System.TypeInfo(T);
-  ctxRtti := TRttiContext.Create;
-  try
-    typRtti := ctxRtti.GetType(Info);
-    for Prop in typRtti.GetProperties do
-    begin
-      for Atributo in Prop.GetAttributes do
-      begin
-        if Atributo is FieldResult then
-        Begin
-          aResult := Uppercase(FieldResult(Atributo).Name);
-          break;
-        End;
-      end;
-    end;
-  finally
-    ctxRtti.Free;
-  end;
-end;
-
-function TSimpleRTTI<T>.StoreProcDel(var aStoreProcName: String)
-  : iSimpleRTTI<T>;
-var
-  vInfo: PTypeInfo;
-  vCtxRtti: TRttiContext;
-  vTypRtti: TRttiType;
-  vAttr: TCustomAttribute;
-begin
-  Result := Self;
-  vInfo := System.TypeInfo(T);
-  vCtxRtti := TRttiContext.Create;
-  try
-    vTypRtti := vCtxRtti.GetType(vInfo);
-    for vAttr in vTypRtti.GetAttributes do
-      if (vAttr is ProceDel) then
-      begin
-        aStoreProcName := Uppercase(ProceDel(vAttr).Name);
-        Break;
-      end;
-  finally
-    vCtxRtti.Free;
-  end;
-
-end;
-
-function TSimpleRTTI<T>.StoreProcSel(var aStoreProcName: String)
-  : iSimpleRTTI<T>;
-var
-  vInfo: PTypeInfo;
-  vCtxRtti: TRttiContext;
-  vTypRtti: TRttiType;
-  vAttr: TCustomAttribute;
-begin
-  Result := Self;
-  vInfo := System.TypeInfo(T);
-  vCtxRtti := TRttiContext.Create;
-  try
-    vTypRtti := vCtxRtti.GetType(vInfo);
-    for vAttr in vTypRtti.GetAttributes do
-      if (vAttr is ProceSel) then
-      begin
-        aStoreProcName := Uppercase(ProceSel(vAttr).Name);
-        Break;
-      end;
-  finally
-    vCtxRtti.Free;
-  end;
-
-end;
-
-function TSimpleRTTI<T>.DictionaryFieldsImput(var aDictionary
-  : TDictionary<string, Variant>): iSimpleRTTI<T>;
-var
-  ctxRtti: TRttiContext;
-  typRtti: TRttiType;
-  prpRtti: TRttiProperty;
-  Info: PTypeInfo;
-  Attribute: TCustomAttribute;
-  Aux: String;
-  vCampo: string;
+  ctxRtti : TRttiContext;
+  typRtti : TRttiType;
+  prpRtti : TRttiProperty;
+  Info  : PTypeInfo;
 begin
   Result := Self;
   Info := System.TypeInfo(T);
@@ -1016,39 +856,11 @@ begin
     typRtti := ctxRtti.GetType(Info);
     for prpRtti in typRtti.GetProperties do
     begin
-      vCampo := '';
-      for Attribute in prpRtti.GetAttributes do
+      if (prpRtti.EhResulName) then
       begin
-        if (Attribute is ProcImput) then
-        begin
-          vCampo := ProcImput(Attribute).Name;
-          case prpRtti.PropertyType.TypeKind of
-            tkInt64, tkInteger:
-              aDictionary.Add(vCampo, prpRtti.GetValue(Pointer(FInstance))
-                .AsInteger);
-            tkFloat:
-              begin
-                if CompareText('TDateTime', prpRtti.PropertyType.Name) = 0 then
-                  aDictionary.Add(vCampo,
-                    StrToDateTime(prpRtti.GetValue(Pointer(FInstance))
-                    .ToString))
-                else
-                  aDictionary.Add(vCampo,
-                    __FloatFormat(prpRtti.GetValue(Pointer(FInstance))
-                    .ToString));
-              end;
-            tkWChar, tkLString, tkWString, tkUString, tkString:
-              aDictionary.Add(vCampo, prpRtti.GetValue(Pointer(FInstance))
-                .AsString);
-            tkVariant:
-              aDictionary.Add(vCampo, prpRtti.GetValue(Pointer(FInstance))
-                .AsVariant);
-          else
-            aDictionary.Add(vCampo, prpRtti.GetValue(Pointer(FInstance))
-              .AsString);
-          end;
-        end;
-      end;
+        aResult := Uppercase(prpRtti.FieldResult);
+        break;
+      End;
     end;
   finally
     ctxRtti.Free;

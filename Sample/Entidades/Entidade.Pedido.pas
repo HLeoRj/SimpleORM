@@ -25,7 +25,8 @@ Type
   public
     constructor Create;
     destructor Destroy; override;
-    [Campo('ID'), Pk, AutoInc,ResultProc('RESULTID'),ProcImput('AID')]
+    [Campo('ID'), Pk, AutoInc,ResultProc('RESULTID')]
+    [ProcImput('AID')]
     property ID: Integer read FID write SetID;
     [Campo('NOME')]
     property CLIENTE: String read FCLIENTE write SetCLIENTE;

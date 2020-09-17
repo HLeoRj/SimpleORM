@@ -105,6 +105,10 @@
         <DCCReference Include="SimpleRTTI.pas"/>
         <DCCReference Include="SimpleSQL.pas"/>
         <DCCReference Include="SimpleDAOSQLAttribute.pas"/>
+        <DCCReference Include="SimpleRTTIHelper.pas"/>
+        <DCCReference Include="SimpleValidator.pas"/>
+        <DCCReference Include="SimpleUtil.pas"/>
+        <DCCReference Include="SimpleEntity.pas"/>
         <DCCReference Include="SimpleStoreProcInterface.pas"/>
         <DCCReference Include="SimpleStoreProcFiredac.pas"/>
         <DCCReference Include="SimpleDAOStoreProc.pas"/>
