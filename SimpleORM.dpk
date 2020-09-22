@@ -54,6 +54,8 @@ contains
   SimpleValidator in 'SimpleValidator.pas',
   SimpleUtil in 'SimpleUtil.pas',
   SimpleEntity in 'SimpleEntity.pas',
+   SimpleJSONUtil in 'SimpleJSONUtil.pas',
+  SimpleJSON in 'SimpleJSON.pas',
   SimpleStoreProcInterface in 'SimpleStoreProcInterface.pas',
   SimpleStoreProcFiredac in 'SimpleStoreProcFiredac.pas',
   SimpleDAOStoreProc in 'SimpleDAOStoreProc.pas',

@@ -117,6 +117,8 @@ Type
       destructor Destroy; override;
       class function New( aInstance : T ) : iSimpleRTTI<T>;
       function TableName(var aTableName: String): ISimpleRTTI<T>;
+
+      
       function Fields (var aFields : String) : iSimpleRTTI<T>;
       function FieldsInsert (var aFields : String) : iSimpleRTTI<T>;
       function Param (var aParam : String) : iSimpleRTTI<T>;
@@ -710,10 +712,10 @@ end;
 
 function TSimpleRTTI<T>.Where (var aWhere : String) : iSimpleRTTI<T>;
 var
-  ctxRtti : TRttiContext;
-  typRtti : TRttiType;
-  prpRtti : TRttiProperty;
-  Info : PTypeInfo;
+  ctxRtti   : TRttiContext;
+  typRtti   : TRttiType;
+  prpRtti   : TRttiProperty;
+  Info     : PTypeInfo;
 begin
   Result := Self;
   Info := System.TypeInfo(T);

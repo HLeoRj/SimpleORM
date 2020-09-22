@@ -20,11 +20,11 @@
 		},
 		"https://github.com/hashload/horse": {
 			"name": "horse",
-			"version": "v2.0-alpha.1",
-			"hash": "533f53d4f7f3f64544271a4dda9c227c",
+			"version": "v2.0.1",
+			"hash": "a9e80dbc40536b989ad1089a85bb1c5b",
 			"artifacts": {},
 			"failed": false,
-			"changed": false
+			"changed": true
 		},
 		"https://github.com/hashload/horse-cors": {
 			"name": "horse-cors",
@@ -36,8 +36,8 @@
 		},
 		"https://github.com/hashload/jhonson": {
 			"name": "jhonson",
-			"version": "1.0.5",
-			"hash": "34d01183ef1b6af802c7e132adedeae5",
+			"version": "1.0.6",
+			"hash": "8a9fbc30fe30e276c369aa02adc425e0",
 			"artifacts": {},
 			"failed": false,
 			"changed": false
@@ -45,7 +45,7 @@
 		"https://github.com/hleorj/simpleorm": {
 			"name": "SimpleORM",
 			"version": "master",
-			"hash": "5277013082c0caab6d7d18ac9fd79af6",
+			"hash": "3e48a3dd480f0533d0946141f6328694",
 			"artifacts": {},
 			"failed": false,
 			"changed": false
